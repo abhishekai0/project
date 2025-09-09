@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicConnect - Issue Reporting System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        civic: {
+                            blue: '#2563eb',
+                            green: '#16a34a',
+                            red: '#dc2626'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-pulse-slow {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        .hover-lift {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div id="app" class="min-h-screen">
+        <!-- Navigation Header -->
+        <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-civic-blue rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <h1 class="text-xl font-bold text-gray-900 dark:text-white">CivicConnect</h1>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button id="languageToggle" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                            EN
+                        </button>
+                        <button id="darkModeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                            </svg>
+                        </button>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-civic-green rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-medium">JD</span>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">John Doe</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Screen Container -->
+            <div id="screenContainer" class="animate-fade-in">
+                <!-- Home Dashboard (Default Screen) -->
+                <div id="homeScreen" class="screen">
+                    <!-- Quick Actions -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <button onclick="showScreen('reportScreen')" class="bg-civic-blue hover:bg-blue-700 text-white p-6 rounded-2xl shadow-lg hover-lift transition-all duration-200">
+                            <svg class="w-8 h-8 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3 class="font-semibold">Report Issue</h3>
+                        </button>
+                        
+                        <button onclick="showScreen('trackingScreen')" class="bg-civic-green hover:bg-green-700 text-white p-6 rounded-2xl shadow-lg hover-lift transition-all duration-200">
+                            <svg class="w-8 h-8 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            <h3 class="font-semibold">Track Issues</h3>
+                        </button>
+                        
+                        <button onclick="showScreen('communityScreen')" class="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded-2xl shadow-lg hover-lift transition-all duration-200">
+                            <svg class="w-8 h-8 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <h3 class="font-semibold">Community</h3>
+                        </button>
+                        
+                        <button onclick="showScreen('rewardsScreen')" class="bg-amber-500 hover:bg-amber-600 text-white p-6 rounded-2xl shadow-lg hover-lift transition-all duration-200">
+                            <svg class="w-8 h-8 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                            </svg>
+                            <h3 class="font-semibold">Rewards</h3>
+                        </button>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Resolved Issues</p>
+                                    <p class="text-3xl font-bold text-civic-green">1,247</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-civic-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pending Issues</p>
+                                    <p class="text-3xl font-bold text-amber-500">89</p>
+                                </div>
+                                <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Users</p>
+                                    <p class="text-3xl font-bold text-civic-blue">2,156</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-civic-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filters -->
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg mb-8">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1">
+                                <input type="text" placeholder="Search issues..." class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-civic-blue focus:border-transparent dark:bg-gray-700 dark:text-white">
+                            </div>
+                            <select class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-civic-blue dark:bg-gray-700 dark:text-white">
+                                <option>All Categories</option>
+                                <option>Garbage</option>
+                                <option>Pothole</option>
+                                <option>Water Leak</option>
+                                <option>Electrical</option>
+                            </select>
+                            <select class="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-civic-blue dark:bg-gray-700 dark:text-white">
+                                <option>All Status</option>
+                                <option>Submitted</option>
+                                <option>In Progress</option>
+                                <option>Resolved</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Recent Issues -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Recent Issues</h2>
+                        </div>
+                        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                            <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3 mb-2">
+                                            <span class="px-3 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Pothole</span>
+                                            <span class="px-3 py-1 text-xs font-medium bg-amber-100 text-amber-800 rounded-full">In Progress</span>
+                                        </div>
+                                        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Large pothole on Main Street</h3>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Dangerous pothole causing traffic issues near the intersection...</p>
+                                        <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 space-x-4">
+                                            <span>📍 Main St & 5th Ave</span>
+                                            <span>⏰ 2 hours ago</span>
+                                            <span>👍 23 votes</span>
+                                        </div>
+                                    </div>
+                                    <div class="w-16 h-16 bg-gray-200 dark:bg-gray-600 rounded-xl ml-4"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3 mb-2">
+                                            <span class="px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Garbage</span>
+                                            <span class="px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Resolved</span>
+                                        </div>
+                                        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Overflowing trash bin</h3>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Trash bin at Central Park entrance is overflowing...</p>
+                                        <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 space-x-4">
+                                            <span>📍 Central Park Entrance</span>
+                                            <span>⏰ 1 day ago</span>
+                                            <span>👍 45 votes</span>
+                                        </div>
+                                    </div>
+                                    <div class="w-16 h-16 bg-gray-200 dark:bg-gray-600 rounded-xl ml-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Issue Screen -->
+                <div id="reportScreen" class="screen hidden">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Report New Issue</h2>
+                                <button onclick="showScreen('homeScreen')" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <form id="reportForm" class="space-y-6">
+                                <!-- Photo Upload -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Upload Photo</label>
+                                    <div id="photoUpload" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center hover:border-civic-blue transition-colors cursor-pointer">
+                                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        </svg>
+                                        <p class="text-gray-600 dark:text-gray-400">Click to upload or drag and drop</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">PNG, JPG up to 10MB</p>
+                                    </div>
+                                    <input type="file" id="photoInput" class="hidden" accept="image/*">
+                                </div>
+
+                                <!-- Category -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+                                    <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-civic-blue dark:bg-gray-700 dark:text-white">
+                                        <option>Select category...</option>
+                                        <option>🗑️ Garbage Collection</option>
+                                        <option>🕳️ Pothole</option>
+                                        <option>💧 Water Leak</option>
+                                        <option>⚡ Electrical Hazard</option>
+                                        <option>🚧 Road Damage</option>
+                                        <option>🌳 Tree/Vegetation</option>
+                                        <option>🏢 Building Issue</option>
+                                        <option>🚦 Traffic Signal</option>
+                                    </select>
+                                </div>
+
+                                <!-- Description -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                                    <div class="relative">
+                                        <textarea id="descriptionText" rows="4" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-civic-blue dark:bg-gray-700 dark:text-white resize-none" placeholder="Describe the issue in detail..."></textarea>
+                                        <div class="absolute bottom-3 right-3 flex items-center space-x-2">
+                                            <span id="charCounter" class="text-xs text-gray-500">0/500</span>
+                                            <button type="button" id="voiceButton" class="p-2 bg-civic-blue text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Location -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
+                                    <div class="flex space-x-3">
+                                        <input type="text" id="locationInput" class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-civic-blue dark:bg-gray-700 dark:text-white" placeholder="Enter address or location...">
+                                        <button type="button" id="detectLocationBtn" class="px-6 py-3 bg-civic-green text-white rounded-xl hover:bg-green-700 transition-colors whitespace-nowrap">
+                                            📍 Detect
+                                        </button>
+                                    </div>
+                                    <div id="mapPreview" class="mt-3 h-32 bg-gray-200 dark:bg-gray-600 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400">
+                                        <span>📍 Location will appear here</span>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" id="submitBtn" class="w-full bg-civic-blue hover:bg-blue-700 text-white py-4 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2">
+                                    <span>Submit Report</span>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tracking Screen -->
+                <div id="trackingScreen" class="screen hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Track Your Issues</h2>
+                        <button onclick="showScreen('homeScreen')" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                            ← Back to Home
+                        </button>
+                    </div>
+
+                    <!-- Sorting Options -->
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg mb-6">
+                        <div class="flex flex-wrap gap-3">
+                            <button class="px-4 py-2 bg-civic-blue text-white rounded-lg text-sm font-medium">All Issues</button>
+                            <button class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Submitted</button>
+                            <button class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">In Progress</button>
+                            <button class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Resolved</button>
+                        </div>
+                    </div>
+
+                    <!-- Issues List -->
+                    <div class="space-y-4">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+                            <div class="p-6">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3 mb-2">
+                                            <span class="px-3 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Pothole</span>
+                                            <span class="px-3 py-1 text-xs font-medium bg-amber-100 text-amber-800 rounded-full">In Progress</span>
+                                        </div>
+                                        <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Large pothole on Main Street</h3>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm">Report ID: #RPT-2024-001</p>
+                                    </div>
+                                    <button onclick="toggleIssueDetails('issue1')" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <!-- Progress Timeline -->
+                                <div class="mb-4">
+                                    <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                        <span>Progress</span>
+                                        <span>60%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                        <div class="progress-bar h-2 rounded-full" style="width: 60%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                                    <span>📍 Main St & 5th Ave</span>
+                                    <span>Submitted 3 days ago</span>
+                                </div>
+                            </div>
+
+                            <!-- Expandable Details -->
+                            <div id="issue1" class="hidden border-t border-gray-200 dark:border-gray-700 p-6 bg-gray-50 dark:bg-gray-700">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Timeline</h4>
+                                        <div class="space-y-3">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-3 h-3 bg-civic-green rounded-full"></div>
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Report Submitted</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">March 15, 2024</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-3 h-3 bg-civic-green rounded-full"></div>
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Under Review</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">March 16, 2024</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-3 h-3 bg-amber-500 rounded-full animate-pulse-slow"></div>
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Work in Progress</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">March 17, 2024</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-3 h-3 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Resolution</p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">Pending</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Details</h4>
+                                        <div class="w-full h-32 bg-gray-200 dark:bg-gray-600 rounded-xl mb-3"></div>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Dangerous pothole causing traffic issues near the intersection. Multiple vehicles have been damaged.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <span class="px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Garbage</span>
+                                        <span class="px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Resolved</span>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Overflowing trash bin</h3>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">Report ID: #RPT-2024-002</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                    <span>Progress</span>
+                                    <span>100%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="progress-bar h-2 rounded-full" style="width: 100%"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                                <span>📍 Central Park Entrance</span>
+                                <span>Resolved 1 day ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Screen -->
+                <div id="communityScreen" class="screen hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Community Verification</h2>
+                        <button onclick="showScreen('homeScreen')" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                            ← Back to Home
+                        </button>
+                    </div>
+
+                    <!-- Map View Toggle -->
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg mb-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex space-x-3">
+                                <button id="listViewBtn" class="px-4 py-2 bg-civic-blue text-white rounded-lg text-sm font-medium">List View</button>
+                                <button id="mapViewBtn" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Map View</button>
+                            </div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">
+                                <span class="font-medium">12</span> issues nearby
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Issues for Verification -->
+                    <div id="issuesList" class="space-y-4">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <span class="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Water Leak</span>
+                                        <div class="flex items-center space-x-1">
+                                            <span class="text-xs font-medium text-amber-600">⭐ 8.5</span>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">Credibility</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Water pipe burst on Oak Street</h3>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">Water flooding the sidewalk and road. Reported 30 minutes ago.</p>
+                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 space-x-4 mb-4">
+                                        <span>📍 Oak St & 3rd Ave</span>
+                                        <span>👤 Sarah M.</span>
+                                        <span>⏰ 30 min ago</span>
+                                    </div>
+                                </div>
+                                <div class="w-20 h-20 bg-gray-200 dark:bg-gray-600 rounded-xl ml-4"></div>
+                            </div>
+
+                            <!-- Voting Buttons -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <button onclick="voteIssue('up', this)" class="flex items-center space-x-2 px-4 py-2 bg-green-100 hover:bg-green-200 text-green-800 rounded-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L9 7m5 3v4M9 7H7l-2-2v9a2 2 0 002 2h2m0-10V6a2 2 0 012-2h2.5a2 2 0 011.5.67l.321.321a1 1 0 00.708.293H21"></path>
+                                        </svg>
+                                        <span class="font-medium">Verify (23)</span>
+                                    </button>
+                                    <button onclick="voteIssue('down', this)" class="flex items-center space-x-2 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v2a2 2 0 002 2h.095c.5 0 .905-.405.905-.905 0-.714.211-1.412.608-2.006L15 17m-5-3v-4M15 17h2l2-2V6a2 2 0 00-2-2h-2m0 10v1a2 2 0 01-2 2h-2.5a2 2 0 01-1.5-.67l-.321-.321a1 1 0 00-.708-.293H3"></path>
+                                        </svg>
+                                        <span class="font-medium">Dispute (2)</span>
+                                    </button>
+                                </div>
+                                <button onclick="toggleComments('comments1')" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                    💬 Comments (5)
+                                </button>
+                            </div>
+
+                            <!-- Comments Section -->
+                            <div id="comments1" class="hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <div class="space-y-3 mb-4">
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <span class="text-sm font-medium text-gray-900 dark:text-white">Mike R.</span>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">5 min ago</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">I can confirm this - just drove by and there's definitely water everywhere.</p>
+                                    </div>
+                                    <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <span class="text-sm font-medium text-gray-900 dark:text-white">Lisa K.</span>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">8 min ago</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">City crew is already on the way according to my neighbor who called it in.</p>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-3">
+                                    <input type="text" placeholder="Add a comment..." class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-civic-blue dark:bg-gray-700 dark:text-white">
+                                    <button class="px-4 py-2 bg-civic-blue text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">Post</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <span class="px-3 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full">Street Light</span>
+                                        <div class="flex items-center space-x-1">
+                                            <span class="text-xs font-medium text-amber-600">⭐ 9.2</span>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">Credibility</span>
+                                        </div>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white mb-1">Broken street light creating safety hazard</h3>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">Street light has been out for 3 days, making the area very dark at night.</p>
+                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 space-x-4 mb-4">
+                                        <span>📍 Pine St & 7th Ave</span>
+                                        <span>👤 David L.</span>
+                                        <span>⏰ 2 hours ago</span>
+                                    </div>
+                                </div>
+                                <div class="w-20 h-20 bg-gray-200 dark:bg-gray-600 rounded-xl ml-4"></div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <button onclick="voteIssue('up', this)" class="flex items-center space-x-2 px-4 py-2 bg-green-100 hover:bg-green-200 text-green-800 rounded-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L9 7m5 3v4M9 7H7l-2-2v9a2 2 0 002 2h2m0-10V6a2 2 0 012-2h2.5a2 2 0 011.5.67l.321.321a1 1 0 00.708.293H21"></path>
+                                        </svg>
+                                        <span class="font-medium">Verify (18)</span>
+                                    </button>
+                                    <button onclick="voteIssue('down', this)" class="flex items-center space-x-2 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m-7 10v2a2 2 0 002 2h.095c.5 0 .905-.405.905.905 0 .714.211 1.412.608 2.006L15 17m-5-3v-4M15 17h2l2-2V6a2 2 0 00-2-2h-2m0 10v1a2 2 0 01-2 2h-2.5a2 2 0 01-1.5-.67l-.321-.321a1 1 0 00-.708-.293H3"></path>
+                                        </svg>
+                                        <span class="font-medium">Dispute (1)</span>
+                                    </button>
+                                </div>
+                                <button class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                    💬 Comments (3)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map View (Hidden by default) -->
+                    <div id="mapView" class="hidden">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                            <div class="h-96 bg-gray-200 dark:bg-gray-600 rounded-xl flex items-center justify-center">
+                                <div class="text-center">
+                                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    <p class="text-gray-600 dark:text-gray-400">Interactive map with issue markers would appear here</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">🔴 Urgent • 🟡 Medium • 🟢 Low Priority</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rewards Screen -->
+                <div id="rewardsScreen" class="screen hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Rewards & Achievements</h2>
+                        <button onclick="showScreen('homeScreen')" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                            ← Back to Home
+                        </button>
+                    </div>
+
+                    <!-- Points Tracker -->
+                    <div class="bg-gradient-to-r from-civic-blue to-purple-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">Your Civic Points</h3>
+                                <p class="text-blue-100">Keep contributing to earn more rewards!</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-4xl font-bold">1,247</div>
+                                <div class="text-blue-100">Total Points</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span>Progress to next level</span>
+                                <span>1,247 / 1,500</span>
+                            </div>
+                            <div class="w-full bg-blue-400 rounded-full h-3">
+                                <div class="bg-white h-3 rounded-full" style="width: 83%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <span class="px-4 py-2 bg-white bg-opacity-20 rounded-full text-sm font-medium">
+                                🏆 Level 4: Community Champion
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Badges -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Your Badges</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="text-center p-4 bg-gradient-to-b from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-800 rounded-xl">
+                                <div class="text-4xl mb-2">🥇</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm">First Report</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">Submitted your first issue</p>
+                            </div>
+                            
+                            <div class="text-center p-4 bg-gradient-to-b from-green-100 to-green-200 dark:from-green-900 dark:to-green-800 rounded-xl">
+                                <div class="text-4xl mb-2">✅</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm">Top Verifier</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">Verified 50+ issues</p>
+                            </div>
+                            
+                            <div class="text-center p-4 bg-gradient-to-b from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 rounded-xl">
+                                <div class="text-4xl mb-2">🔧</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm">Problem Solver</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">10 issues resolved</p>
+                            </div>
+                            
+                            <div class="text-center p-4 bg-gradient-to-b from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 rounded-xl">
+                                <div class="text-4xl mb-2">🌟</div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm">Community Star</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">1000+ civic points</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leaderboard -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Community Leaderboard</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-900 dark:to-yellow-800 rounded-xl">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-2xl">🥇</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">Sarah Johnson</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Level 6 • Community Hero</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-gray-900 dark:text-white">2,847 pts</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">45 reports</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-xl">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-2xl">🥈</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">Mike Rodriguez</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Level 5 • Civic Leader</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-gray-900 dark:text-white">2,156 pts</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">38 reports</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-800 rounded-xl">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-2xl">🥉</div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">Lisa Chen</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Level 4 • Community Champion</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-gray-900 dark:text-white">1,923 pts</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">32 reports</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-civic-blue to-blue-600 text-white rounded-xl">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-2xl">👤</div>
+                                    <div>
+                                        <h4 class="font-semibold">You (John Doe)</h4>
+                                        <p class="text-sm text-blue-100">Level 4 • Community Champion</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold">1,247 pts</div>
+                                    <div class="text-sm text-blue-100">23 reports</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Certificate Download -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-civic-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Download Your Certificate</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-6">Celebrate your civic contributions with an official certificate</p>
+                            <button onclick="downloadCertificate()" class="px-8 py-3 bg-civic-blue hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors">
+                                📜 Download Certificate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global state
+        let currentScreen = 'homeScreen';
+        let isDarkMode = false;
+        let currentLanguage = 'EN';
+        let userPoints = 1247;
+
+        // Screen navigation
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenId).classList.remove('hidden');
+            currentScreen = screenId;
+            
+            // Add fade-in animation
+            document.getElementById('screenContainer').classList.remove('animate-fade-in');
+            setTimeout(() => {
+                document.getElementById('screenContainer').classList.add('animate-fade-in');
+            }, 10);
+        }
+
+        // Dark mode toggle
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            isDarkMode = !isDarkMode;
+            document.documentElement.classList.toggle('dark', isDarkMode);
+            
+            // Update icon
+            const icon = this.querySelector('svg path');
+            if (isDarkMode) {
+                icon.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z');
+            } else {
+                icon.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z');
+            }
+        });
+
+        // Language toggle
+        document.getElementById('languageToggle').addEventListener('click', function() {
+            currentLanguage = currentLanguage === 'EN' ? 'ES' : 'EN';
+            this.textContent = currentLanguage;
+            
+            // In a real app, this would trigger translation
+            if (currentLanguage === 'ES') {
+                document.querySelector('h1').textContent = 'CivicConnect';
+                // Add more translations as needed
+            } else {
+                document.querySelector('h1').textContent = 'CivicConnect';
+            }
+        });
+
+        // Report form functionality
+        document.getElementById('reportForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = `
+                <svg class="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Submitting...
+            `;
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Report Submitted!
+                `;
+                submitBtn.classList.remove('bg-civic-blue', 'hover:bg-blue-700');
+                submitBtn.classList.add('bg-civic-green');
+                
+                // Add points
+                userPoints += 50;
+                
+                setTimeout(() => {
+                    showScreen('homeScreen');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('bg-civic-green');
+                    submitBtn.classList.add('bg-civic-blue', 'hover:bg-blue-700');
+                    
+                    // Reset form
+                    document.getElementById('reportForm').reset();
+                    document.getElementById('charCounter').textContent = '0/500';
+                }, 2000);
+            }, 2000);
+        });
+
+        // Character counter for description
+        document.getElementById('descriptionText')?.addEventListener('input', function() {
+            const counter = document.getElementById('charCounter');
+            const length = this.value.length;
+            counter.textContent = `${length}/500`;
+            
+            if (length > 450) {
+                counter.classList.add('text-red-500');
+            } else {
+                counter.classList.remove('text-red-500');
+            }
+        });
+
+        // Voice input simulation
+        document.getElementById('voiceButton')?.addEventListener('click', function() {
+            const textarea = document.getElementById('descriptionText');
+            const button = this;
+            
+            // Simulate voice recording
+            button.classList.add('bg-red-500', 'animate-pulse-slow');
+            button.innerHTML = `
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                </svg>
+            `;
+            
+            setTimeout(() => {
+                button.classList.remove('bg-red-500', 'animate-pulse-slow');
+                button.classList.add('bg-civic-blue');
+                button.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                    </svg>
+                `;
+                
+                // Simulate transcribed text
+                textarea.value = "There's a large pothole on Main Street that's causing damage to vehicles. It's been there for several days and is getting worse with the recent rain.";
+                textarea.dispatchEvent(new Event('input'));
+            }, 3000);
+        });
+
+        // Location detection
+        document.getElementById('detectLocationBtn')?.addEventListener('click', function() {
+            const input = document.getElementById('locationInput');
+            const mapPreview = document.getElementById('mapPreview');
+            const button = this;
+            
+            button.innerHTML = '🔄 Detecting...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                input.value = 'Main Street & 5th Avenue, Downtown';
+                mapPreview.innerHTML = '📍 Location detected: Main St & 5th Ave';
+                mapPreview.classList.add('bg-green-100', 'dark:bg-green-900', 'text-green-800', 'dark:text-green-200');
+                
+                button.innerHTML = '📍 Detect';
+                button.disabled = false;
+            }, 2000);
+        });
+
+        // Photo upload simulation
+        document.getElementById('photoUpload')?.addEventListener('click', function() {
+            document.getElementById('photoInput').click();
+        });
+
+        document.getElementById('photoInput')?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const uploadArea = document.getElementById('photoUpload');
+                uploadArea.innerHTML = `
+                    <div class="w-full h-32 bg-gray-200 dark:bg-gray-600 rounded-lg mb-3"></div>
+                    <p class="text-green-600 dark:text-green-400 font-medium">${file.name}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Click to change photo</p>
+                `;
+                uploadArea.classList.add('bg-green-50', 'dark:bg-green-900', 'border-green-300', 'dark:border-green-600');
+            }
+        });
+
+        // Issue details toggle
+        function toggleIssueDetails(issueId) {
+            const details = document.getElementById(issueId);
+            details.classList.toggle('hidden');
+        }
+
+        // Community voting
+        function voteIssue(type, button) {
+            const voteText = button.querySelector('span');
+            const currentVotes = parseInt(voteText.textContent.match(/\d+/)[0]);
+            
+            if (type === 'up') {
+                voteText.textContent = `Verify (${currentVotes + 1})`;
+                button.classList.remove('bg-green-100', 'hover:bg-green-200', 'text-green-800');
+                button.classList.add('bg-green-200', 'text-green-900');
+                userPoints += 5;
+            } else {
+                voteText.textContent = `Dispute (${currentVotes + 1})`;
+                button.classList.remove('bg-red-100', 'hover:bg-red-200', 'text-red-800');
+                button.classList.add('bg-red-200', 'text-red-900');
+                userPoints += 2;
+            }
+            
+            button.disabled = true;
+        }
+
+        // Comments toggle
+        function toggleComments(commentsId) {
+            const comments = document.getElementById(commentsId);
+            comments.classList.toggle('hidden');
+        }
+
+        // Map view toggle
+        document.getElementById('listViewBtn')?.addEventListener('click', function() {
+            this.classList.add('bg-civic-blue', 'text-white');
+            this.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            
+            document.getElementById('mapViewBtn').classList.remove('bg-civic-blue', 'text-white');
+            document.getElementById('mapViewBtn').classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            
+            document.getElementById('issuesList').classList.remove('hidden');
+            document.getElementById('mapView').classList.add('hidden');
+        });
+
+        document.getElementById('mapViewBtn')?.addEventListener('click', function() {
+            this.classList.add('bg-civic-blue', 'text-white');
+            this.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            
+            document.getElementById('listViewBtn').classList.remove('bg-civic-blue', 'text-white');
+            document.getElementById('listViewBtn').classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            
+            document.getElementById('issuesList').classList.add('hidden');
+            document.getElementById('mapView').classList.remove('hidden');
+        });
+
+        // Certificate download
+        function downloadCertificate() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '⏳ Generating...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = '✅ Downloaded!';
+                button.classList.remove('bg-civic-blue', 'hover:bg-blue-700');
+                button.classList.add('bg-civic-green');
+                
+                // Simulate download
+                const link = document.createElement('a');
+                link.href = 'data:text/plain;charset=utf-8,Certificate of Civic Contribution\n\nThis certifies that John Doe has made significant contributions to community improvement through the CivicConnect platform.\n\nPoints Earned: 1,247\nIssues Reported: 23\nLevel: Community Champion\n\nDate: ' + new Date().toLocaleDateString();
+                link.download = 'civic-certificate.txt';
+                link.click();
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    button.classList.remove('bg-civic-green');
+                    button.classList.add('bg-civic-blue', 'hover:bg-blue-700');
+                }, 3000);
+            }, 2000);
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial screen
+            showScreen('homeScreen');
+            
+            // Add hover effects to cards
+            document.querySelectorAll('.hover-lift').forEach(element => {
+                element.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                element.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97c46be7f402f655',t:'MTc1NzM5NzE2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
